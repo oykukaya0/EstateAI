@@ -65,7 +65,7 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "https://estate-ai-lake.vercel.app",
     ],
-    allow_origin_regex=r"https://estate-ai-lake(?:-[a-z0-9-]+)?\.vercel\.app",
+    allow_origin_regex=r"https://estate-ai.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
