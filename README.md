@@ -1,166 +1,66 @@
 # 🏠 EstateAI
 
-### İstanbul Konut Fiyat Tahmin Sistemi
+### Istanbul Apartment Price Prediction
 
-EstateAI, İstanbul'daki konutların satış fiyatlarını makine öğrenmesi kullanarak tahmin eden, kullanıcı dostu bir web uygulamasıdır.
+EstateAI is a web application that estimates apartment listing prices in Istanbul using a machine learning model. Users enter a property's location and characteristics to receive an estimated price.
 
-Kullanıcı; konum ve konut özelliklerini girerek tahmini satış fiyatını saniyeler içerisinde görüntüleyebilir.
-
----
-
-## 🚀 Canlı Demo
-
-🌐 **Web Uygulaması**
+## 🚀 Live Demo
 
 https://estate-ai-lake.vercel.app
 
----
+## 🎯 Project Overview
 
-## 🎯 Projenin Amacı
+The model uses features such as district, neighborhood, gross and net area, room and bathroom counts, floor, building age, heating type, residential complex status, and deed status.
 
-EstateAI'nin temel amacı, İstanbul konut piyasasındaki farklı değişkenleri kullanarak bir konutun tahmini satış fiyatını hesaplamaktır.
+The project covers data exploration, cleaning, feature engineering, model comparison, prediction serving, and a React interface. The training notebooks compare linear regression, random forest, XGBoost, and CatBoost; the deployed prediction pipeline uses **XGBoost**.
 
-Sistem;
+## 🤖 Model Performance
 
-- 📍 İlçe
-- 🏘️ Mahalle
-- 📐 Brüt / Net m²
-- 🛏️ Oda sayısı
-- 🛋️ Salon sayısı
-- 🛁 Banyo sayısı
-- 🏢 Kat bilgileri
-- 🏗️ Bina yaşı
-- 🔥 Isıtma tipi
-- 🏡 Site bilgisi
-- 📄 Tapu durumu
-- ve diğer konut özelliklerini
+The XGBoost model was evaluated on a held-out 20% split of the dataset:
 
-modelin girdileri olarak kullanır.
-
----
-
-## 🤖 Makine Öğrenmesi
-
-Projede regresyon problemi için **XGBoost** tabanlı bir makine öğrenmesi modeli kullanılmıştır.
-
-Model performansı:
-
-| Metrik | Değer |
+| Metric | Result |
 |---|---:|
-| R² | **75.46%** |
-| MAE | **2.76 M TL** |
-| RMSE | **7.95 M TL** |
+| R² | **0.7546** |
+| Mean absolute error (MAE) | **TRY 2.76 million** |
+| Root mean squared error (RMSE) | **TRY 7.95 million** |
 
-> Model çıktısı gerçek satış fiyatı yerine referans niteliğinde bir tahmin olarak değerlendirilmelidir.
+These figures describe performance on apartment listing data. Predictions are estimates, not verified transaction prices or appraisals.
 
----
+## 🧠 Model Explanations
 
-## 🧠 Açıklanabilir Yapay Zekâ
+The training notebook uses **SHAP (SHapley Additive exPlanations)** to examine feature contributions to XGBoost predictions. This helps explore how property characteristics affect an individual prediction; it does not establish that a feature causes a price change.
 
-EstateAI yalnızca tahmin üretmekle kalmaz.
-
-Modelin tahmin üzerindeki etkisini açıklamak için **SHAP (SHapley Additive exPlanations)** yaklaşımından yararlanılmıştır.
-
-Bu sayede kullanıcılara:
-
-- Hangi özelliklerin fiyatı artırdığı
-- Hangi özelliklerin fiyatı düşürdüğü
-- Özelliklerin tahmin üzerindeki göreceli etkileri
-
-gibi bilgiler sunulabilir.
-
----
-
-## 🏗️ Sistem Mimarisi
+## 🏗️ Architecture
 
 ```text
-                    ┌─────────────────────┐
-                    │      Kullanıcı      │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │   React Frontend    │
-                    │      Vercel         │
-                    └──────────┬──────────┘
-                               │
-                         REST API
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │       FastAPI       │
-                    │       Render        │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │   XGBoost Model     │
-                    │    + Feature Eng.   │
-                    └──────────┬──────────┘
+User input → React frontend (Vercel) → FastAPI backend (Render)
+           → feature processing and trained XGBoost model → estimated price
+```
 
+## 💻 Technology Stack
 
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │   Tahmini Konut     │
-                    │      Fiyatı         │
-                    └─────────────────────┘
-💻 Teknolojiler
-Frontend
-React
-Vite
-JavaScript
-CSS
-Lucide Icons
-Backend
-Python
-FastAPI
-Uvicorn
-Pydantic
-Machine Learning
-XGBoost
-Scikit-learn
-Pandas
-NumPy
-SHAP
-Joblib
-Deployment
-Vercel — Frontend
-Render — Backend
-GitHub — Source Control
+| Area | Tools |
+|---|---|
+| Frontend | React, Vite, JavaScript, CSS, Lucide Icons |
+| Backend | Python, FastAPI, Uvicorn, Pydantic |
+| Machine learning | XGBoost, scikit-learn, pandas, NumPy, SHAP, Joblib |
+| Deployment | Vercel (frontend), Render (backend), GitHub (source control) |
 
+## 📁 Repository Structure
 
+```text
 EstateAI/
-│
-├── backend/
-│   ├── main.py
-│   ├── predictor.py
-│   ├── schemas.py
-│   └── requirements.txt
-│
+├── backend/                 # API, input schemas, and prediction logic
 ├── data/
-│   ├── raw/
-│   └── processed/
-│
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── App.jsx
-│   │   ├── App.css
-│   │   └── main.jsx
-│   ├── package.json
-│   └── vite.config.js
-│
-├── models/
-│   ├── feature_columns.pkl
-│   └── xgb_model.pkl
-│
+│   ├── raw/                # Original CSV used in this project
+│   └── processed/          # Cleaned and engineered features
+├── frontend/               # React application
+├── models/                 # Serialized model and feature columns
 ├── notebooks/
 │   ├── 01_data_exploration.ipynb
 │   ├── 02_data_cleaning.ipynb
 │   ├── 03_feature_engineering.ipynb
 │   ├── 04_feature_selection.ipynb
 │   └── 05_model_training.ipynb
-│
 └── requirements.txt
+```
